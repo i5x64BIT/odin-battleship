@@ -1,5 +1,6 @@
 import Board from "../../src/logic/Board";
-import Ship from "../../src/logic/Ship";
+import Player from "../../src/logic/Player";
+import Point from "../../src/logic/Point";
 
 describe("Board Creation", () => {
     test("create a board", () => {
@@ -9,75 +10,50 @@ describe("Board Creation", () => {
 });
 
 let board;
-beforeEach(() => (board = Board()));
+let enemyPlayer;
+
+beforeEach(() => {
+    board = Board();
+    enemyPlayer = Player("Joe");
+    enemyPlayer.addShip(2, Point(1, 1), "up");
+});
 
 describe("Getters", () => {
     test("Call getType()", () => expect(board.getType()).toBe("Board"));
-    test("Call getShips()", () => expect(board.getShips()).toEqual([]));
-    test("Call getHits()", () => expect(board.getHits()).toEqual([]));
+    test("Call getShots()", () => expect(board.getShots()).toEqual([]));
 });
-describe("Add Ship", () => {
-    test("Add coordinates to a ship", () => {
-        expect(board.addShip(Ship(2), { x: 1, y: 1 }, { x: 1, y: 2 })).toEqual(
-            expect.objectContaining({
-                coordinates: {
-                    start: { x: 1, y: 1 },
-                    end: { x: 1, y: 2 },
-                },
-            })
-        );
-    });
-    test("Add ship to ships array", () => {
-        board.addShip(Ship(2), { x: 1, y: 1 }, { x: 3, y: 3 });
-        expect(board.getShips()[0]).toBeDefined();
-        expect(board.getShips()[0].getSize()).toEqual(2);
-        expect(board.getShips()[0].coordinates).toEqual({
-            start: { x: 1, y: 1 },
-            end: { x: 3, y: 3 },
-        });
-    });
-    test("Throw on no parameters", () => {
-        expect(() => board.addShip()).toThrow(TypeError);
-    });
-    test("Throw on wrong parameter type", () => {
-        expect(() => board.addShip({}).toThrow(TypeError));
-    });
-    test("Throw missing parameter", () => {
-        expect(() => board.addShip(Ship(2)).toThrow(TypeError));
-    });
-    test("Throw on non number values", () => {
-        expect(() =>
-            board
-                .addShip(Ship(2), { x: "1", y: 2 }, { x: "3", y: "3" })
-                .toThrow(TypeError)
-        );
-    });
-});
-describe("Hits", () => {
-    test("Hit the sea", () => {
-        board.hit({ x: 1, y: 2 });
-        board.hit({ x: 5, y: 5 });
-        expect(board.getHits()).toEqual([
-            { x: 1, y: 2 },
-            { x: 5, y: 5 },
-        ]);
+describe("Shots", () => {
+    beforeEach(() => {});
+    test("Update shots", () => {
+        board.shoot(enemyPlayer, Point(1, 1));
+        board.shoot(enemyPlayer, Point(1, 1));
+        expect(board.getShots().length).toBe(2);
     });
     test("Hit a ship", () => {
-        board.addShip(Ship(2), { x: 1, y: 1 }, { x: 2, y: 1 });
-        board.hit({ x: 1, y: 1 });
-        expect(board.getHits()).toEqual([{ x: 1, y: 1 }]);
-        expect(board.getShips()[0].getHits()).toBe(1);
+        board.shoot(enemyPlayer, Point(1, 1));
+        expect(enemyPlayer.getShipsOwned()[0].getHits()).toBe(1);
     });
     test("Sink a ship", () => {
-        board.addShip(Ship(2), { x: 1, y: 1 }, { x: 2, y: 1 });
-        board.hit({ x: 1, y: 1 });
-        board.hit({ x: 2, y: 1 });
-        expect(board.getHits()).toEqual([
-            { x: 1, y: 1 },
-            { x: 2, y: 1 },
-        ]);
-        expect(board.getHits().length).toBe(2)
-        expect(board.getShips()[0].getHits()).toBe(2);
-        expect(board.getShips()[0].getIsSunk()).toBe(true);
+        board.shoot(enemyPlayer, Point(1, 1));
+        board.shoot(enemyPlayer, Point(1, 2));
+        expect(enemyPlayer.getShipsOwned()[0].getIsSunk()).toBe(true);
+    });
+});
+describe("Shot errors", () => {
+    test("shoot() with no arguments", () => {
+        expect(() => board.shoot()).toThrow(TypeError);
+    });
+    test("shoot() with wrong types", () => {
+        expect(() => board.shoot("{}", Point(1, 1))).toThrow(TypeError);
+        expect(() => board.shoot(enemyPlayer, "{ x: 1, y: 1 }")).toThrow(
+            TypeError
+        );
+        expect(() => board.shoot(enemyPlayer, { x: 1, y: 1 })).toThrow(
+            TypeError
+        );
+        expect(() => board.shoot(Board(), Point(1, 1))).toThrow(TypeError);
+    });
+    test("shoot() with wrong points", () => {
+        expect(() => board.shoot()).toThrow(TypeError);
     });
 });

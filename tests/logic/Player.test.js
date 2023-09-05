@@ -1,5 +1,5 @@
 import Player from "../../src/logic/Player";
-import Ship from "../../src/logic/Ship";
+import Point from "../../src/logic/Point";
 
 describe("Create a player", () => {
     test("no parameters passed", () => {
@@ -9,57 +9,86 @@ describe("Create a player", () => {
         expect(Player("Joe").getName()).toEqual("Joe");
     });
 });
-describe('Test Getters', () => {
-    let player = Player('Joe');
-    test('Get type', () => expect(player.getType()).toBe('Player'))
-    test('Get ships left', () => {
+describe("Test Getters", () => {
+    let player = Player("Joe");
+    test("Get type", () => expect(player.getType()).toBe("Player"));
+    test("Get ships left", () => {
         expect(player.getShipsLeft()).toEqual({
+            xl: 1,
             lg: 1,
             md: 2,
-            sm: 1
-        })
-    })
-    test('Get ships owned', () => {
-        expect(player.getShipsOwned()).toEqual([])
-    })
+            sm: 1,
+        });
+    });
+    test("Get ships owned", () => {
+        expect(player.getShipsOwned()).toEqual([]);
+    });
 });
-describe("Add a ship", () => {
+
+describe("Add a ship effects", () => {
     let player;
     beforeEach(() => {
         player = Player("Joe");
+        player.addShip(4, Point(1, 5), "up");
     });
-    test("Add a ship", () => {
-        player.addShip(Ship(4), 'lg');
-        expect(player.getShipsOwned()[0]).toEqual(expect.objectContaining({ type:"lg" }))
+    test("subtract from shipsLeft", () => {
         expect(player.getShipsLeft()).toEqual({
-            lg:0,
-            md:2,
-            sm:1
+            xl: 1,
+            lg: 0,
+            md: 2,
+            sm: 1,
         });
     });
+    test("add a ship with coordinates to ownedShips", () => {
+        expect(player.getShipsOwned()[0].coordinates).toBeDefined();
+        expect(player.getShipsOwned()[0].coordinates[0].getY()).toBe(5);
+        expect(player.getShipsOwned()[0].coordinates[3].getY()).toBe(8);
+    });
+});
+describe("Add a ship errors", () => {
+    let player;
+    beforeEach(() => (player = Player("Joe")));
+
     test("Throw when no parameters", () => {
         expect(() => {
             player.addShip();
         }).toThrow(TypeError);
     });
-    test("Throw when missing a type", () => {
+    test("Throw when types are wrong", () => {
         expect(() => {
-            player.addShip(Ship(2));
+            player.addShip("4", Point(1,5), "up");
+        }).toThrow(TypeError);
+        expect(() => {
+            player.addShip(4, { x: 1, y: 5 }, "up");
+        }).toThrow(TypeError);
+        expect(() => {
+            player.addShip(4, Point(1, 5), NaN);
         }).toThrow(TypeError);
     });
-    test("Throw when missing a ship", () => {
+    test("Throw when size to big", () => {
         expect(() => {
-            player.addShip('lg');
+            player.addShip(10, Point(1,5), "up");
+        }).toThrow(RangeError);
+    });
+    test("Throw when argument's content not expected", () => {
+        expect(() => {
+            player.addShip(4, Point(1, 5), "LEFT");
         }).toThrow(TypeError);
     });
-    test("Throw when wrong type", () => {
+    test("Throw when end index is overflowing the board", () => {
         expect(() => {
-            player.addShip(Ship(2), 'large');
-        }).toThrow(TypeError);
-    });
-    test("Throw when the object passed isn't a ship", () => {
+            player.addShip(4, Point(99, 99), "up");
+        }).toThrow(RangeError);
         expect(() => {
-            player.addShip({ size: 10 }, 'lg');
-        }).toThrow(TypeError);
+            player.addShip(4, Point(99, 99), "right");
+        }).toThrow(RangeError);
+    })
+    test("Throw when end index is below zero", () => {
+        expect(() => {
+            player.addShip(4, Point(0, 0), "down");
+        }).toThrow(RangeError);
+        expect(() => {
+            player.addShip(4, Point(0, 0), "left");
+        }).toThrow(RangeError);
     });
 });
