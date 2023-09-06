@@ -1,0 +1,55 @@
+html,
+body,
+div,
+p {
+    margin: 0;
+    padding: 0;
+}
+
+/* Layout */
+.page-container {
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.header {
+    background-color: blue;
+    color: white;
+    min-width: 100%;
+    text-align: center;
+    pointer-events: none;
+}
+.board {
+    flex: 0;
+    background-color: pink;
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 300px;
+    width: 50%;
+    outline: 3px black solid;
+    user-select: none;
+}
+.board-item {
+    aspect-ratio: 1/1;
+    width: 10%;
+    outline: 1px black solid;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.board-item:hover {
+    background-color: bisque;
+    opacity: 0.5;
+}
+.player-ship {
+    background-color: lightblue;
+}
+.player-hit {
+    background-color: red;
+}
+.player-missed {
+    background-color: lime;
+}
