@@ -17,8 +17,8 @@ export default function () {
             for (let enemyShip of enemyPlayer.getShipsOwned()) {
                 for (let i = 0; i < enemyShip.getSize(); i++) {
                     if (
-                        JSON.stringify(enemyShip.coordinates[i]) ===
-                        JSON.stringify(point)
+                        enemyShip.coordinates[i].json() ===
+                        point.json()
                     ) {
                         enemyShip.hit();
                         return true;
