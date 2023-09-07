@@ -21,9 +21,7 @@ export default () => {
             enemyPlayer.addShip(3, Point(1, 1), "up");
             enemyPlayer.addShip(3, Point(5, 5), "right");
             enemyPlayer.addShip(4, Point(0, 9), "down");
-            enemyPlayer.addShip(4, Point(3, 4), "down");
             enemyPlayer.addShip(2, Point(5, 8), "down");
-            enemyPlayer.addShip(2, Point(0, 2), "down");
         },
         getPlayerBoard: () => _playerBoard,
         getPlayer: () => _player,
