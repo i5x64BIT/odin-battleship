@@ -3,6 +3,8 @@ import Point from "../logic/Point";
 export default (game, title, ships) => {
     const page = document.querySelector(".page-container");
 
+    const container = document.createElement("div");
+    container.classList = "board-container";
     const titleDiv = document.createElement("h3");
     titleDiv.innerText = title;
     titleDiv.classList = "board-title";
@@ -50,6 +52,6 @@ export default (game, title, ships) => {
             board.appendChild(newPoint);
         }
     }
-    page.appendChild(titleDiv);
-    page.appendChild(board);
+    container.append(titleDiv, board);
+    return container;
 };
