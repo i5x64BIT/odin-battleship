@@ -1,4 +1,3 @@
-import shipSelection from '../shipSelection';
 import gameboard from '../gameboard';
 
 export default (game) => {
@@ -10,7 +9,7 @@ export default (game) => {
         "My Sea",
         game.getPlayer().getShipsOwned()
     );
-    gameSection.append(enemyBoard, playerBoard, shipSelection(game));
+    gameSection.append(enemyBoard, playerBoard);
     
     return gameSection;
 }
