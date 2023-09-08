@@ -3,7 +3,7 @@ export default function (size) {
         throw new RangeError("Ship.js: Missing ship size");
     }
     if(typeof size !== 'number') throw new TypeError(`Ship.js: size should be of type number. ${typeof size} passed`)
-    if (size > 4)
+    if (size > 5)
         throw new RangeError(
             `Shipt.js: The size can be 2-4, ${size} is too big`
         );
