@@ -1,4 +1,6 @@
 import gameboard from '../gameboard';
+import shipSelection from "../shipSelection";
+
 
 export default (game) => {
     const gameSection = document.createElement('div');
@@ -9,7 +11,7 @@ export default (game) => {
         "My Sea",
         game.getPlayer().getShipsOwned()
     );
-    gameSection.append(enemyBoard, playerBoard);
+    gameSection.append(enemyBoard, playerBoard, shipSelection(game));
     
     return gameSection;
 }
