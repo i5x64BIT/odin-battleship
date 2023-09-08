@@ -30,7 +30,7 @@ export default (game, title, ships) => {
                         this.classList.add("player-missed");
                     }
                     this.innerText = "X";
-                });
+                }, {once: true});
             } else {
                 const playerShipCoordinates = ships.reduce(
                     (pointsArray, ship) => {

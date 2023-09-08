@@ -12,6 +12,20 @@ export default function (name) {
     };
     let _shipsOwned = [];
 
+    let _occupiedPoints = {
+        _data: [],
+        push: function (point) {
+            if (this._data.some((p) => p.json() === point.json())) {
+                throw new RangeError(`${point.json()} is already occupied`);
+            } else {
+                this._data.push(point);
+            }
+        },
+        get: function () {
+            return this._data;
+        },
+    };
+
     return {
         getType: () => "Player",
         getName: () => _name,
@@ -41,35 +55,36 @@ export default function (name) {
                         `Ship size must be between 2-5, ${size} passed`
                     );
             }
+            if(!_shipsLeft[type]) throw new RangeError(`Trying to create many ships of type ${type}.`)
 
-            let occupiedPoints = [];
+            let currentShipPoints = [];
             switch (direction) {
                 case "up":
                     for (let i = 0; i < size; i++) {
-                        occupiedPoints.push(
-                            Point(start.getX(), start.getY() + i)
-                        );
+                        const point = Point(start.getX(), start.getY() + i);
+                        _occupiedPoints.push(point); // Check if occupied
+                        currentShipPoints.push(point)
                     }
                     break;
                 case "down":
                     for (let i = 0; i < size; i++) {
-                        occupiedPoints.push(
-                            Point(start.getX(), start.getY() - i)
-                        );
+                        const point = Point(start.getX(), start.getY() - i);
+                        _occupiedPoints.push(point);
+                        currentShipPoints.push(point);
                     }
                     break;
                 case "right":
                     for (let i = 0; i < size; i++) {
-                        occupiedPoints.push(
-                            Point(start.getX() + i, start.getY())
-                        );
+                        const point = Point(start.getX() + i, start.getY());
+                        _occupiedPoints.push(point);
+                        currentShipPoints.push(point);
                     }
                     break;
                 case "left":
                     for (let i = 0; i < size; i++) {
-                        occupiedPoints.push(
-                            Point(start.getX() - i, start.getY())
-                        );
+                        const point = Point(start.getX() - i, start.getY());
+                        _occupiedPoints.push(point);
+                        currentShipPoints.push(point);
                     }
                     break;
                 default:
@@ -80,7 +95,9 @@ export default function (name) {
 
             _shipsLeft[type]--;
             _shipsOwned.push(
-                Object.assign({}, Ship(size), { coordinates: occupiedPoints })
+                Object.assign({}, Ship(size), {
+                    coordinates: currentShipPoints,
+                })
             );
         },
     };

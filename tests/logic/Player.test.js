@@ -91,4 +91,21 @@ describe("Add a ship errors", () => {
             player.addShip(4, Point(0, 0), "left");
         }).toThrow(RangeError);
     });
+    test("Throw on overlaping ships", () => {
+        expect(() => {
+            player.addShip(3, Point(1, 1), "up");
+            player.addShip(3, Point(1, 1), "right");
+        }).toThrow(RangeError);
+        expect(() => {
+            player.addShip(3, Point(7, 6), "up");
+            player.addShip(3, Point(5, 7), "right");
+        }).toThrow(RangeError)
+    })
+    test("Throw when adding more ships then specified", () => {
+        expect(() => {
+            player.addShip(2, Point(0, 0), "up");
+            player.addShip(2, Point(1, 0), "up");
+            player.addShip(2, Point(3, 0), "up");
+        }).toThrow(RangeError)
+    })
 });
