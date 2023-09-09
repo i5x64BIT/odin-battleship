@@ -14,15 +14,14 @@ export default function (name) {
 
     let _occupiedPoints = {
         _data: [],
-        push: function (point) {
-            if (this._data.some((p) => p.json() === point.json())) {
-                throw new RangeError(`${point.json()} is already occupied`);
-            } else {
-                this._data.push(point);
-            }
+        add: function (pointsArray) {
+            this._data = [...this._data, ...pointsArray];
         },
         get: function () {
             return this._data;
+        },
+        isOccupied: function (point) {
+            this._data.some((p) => p.json() === point.json()) ? true : false;
         },
     };
 
@@ -31,6 +30,7 @@ export default function (name) {
         getName: () => _name,
         getShipsLeft: () => _shipsLeft,
         getShipsOwned: () => _shipsOwned,
+        getOccupied: () => _occupiedPoints.get(),
         addShip: (size, start, direction) => {
             if (!size || typeof size !== "number" || isNaN(size))
                 throw new TypeError("A size of type number is expected");
@@ -55,36 +55,39 @@ export default function (name) {
                         `Ship size must be between 2-5, ${size} passed`
                     );
             }
-            if(!_shipsLeft[type]) throw new RangeError(`Trying to create many ships of type ${type}.`)
+            if (!_shipsLeft[type])
+                throw new RangeError(
+                    `Trying to create many ships of type ${type}.`
+                );
 
             let currentShipPoints = [];
             switch (direction) {
                 case "up":
                     for (let i = 0; i < size; i++) {
                         const point = Point(start.getX(), start.getY() + i);
-                        _occupiedPoints.push(point); // Check if occupied
-                        currentShipPoints.push(point)
+                        if (!_occupiedPoints.isOccupied(point))
+                            currentShipPoints.push(point);
                     }
                     break;
                 case "down":
                     for (let i = 0; i < size; i++) {
                         const point = Point(start.getX(), start.getY() - i);
-                        _occupiedPoints.push(point);
-                        currentShipPoints.push(point);
+                        if (!_occupiedPoints.isOccupied(point))
+                            currentShipPoints.push(point);
                     }
                     break;
                 case "right":
                     for (let i = 0; i < size; i++) {
                         const point = Point(start.getX() + i, start.getY());
-                        _occupiedPoints.push(point);
-                        currentShipPoints.push(point);
+                        if (!_occupiedPoints.isOccupied(point))
+                            currentShipPoints.push(point);
                     }
                     break;
                 case "left":
                     for (let i = 0; i < size; i++) {
                         const point = Point(start.getX() - i, start.getY());
-                        _occupiedPoints.push(point);
-                        currentShipPoints.push(point);
+                        if (!_occupiedPoints.isOccupied(point))
+                            currentShipPoints.push(point);
                     }
                     break;
                 default:
@@ -93,12 +96,12 @@ export default function (name) {
                     );
             }
 
+            _occupiedPoints.add(currentShipPoints);
+            const newShip = Object.assign({}, Ship(size), {
+                coordinates: currentShipPoints,
+            });
             _shipsLeft[type]--;
-            _shipsOwned.push(
-                Object.assign({}, Ship(size), {
-                    coordinates: currentShipPoints,
-                })
-            );
+            _shipsOwned.push(newShip);
         },
     };
 }

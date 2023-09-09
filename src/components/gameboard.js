@@ -19,34 +19,33 @@ export default (game, title, ships) => {
             newPoint.classList = "board-item";
 
             if (!ships) {
-                newPoint.addEventListener("click", function () {
-                    if (
-                        game
-                            .getPlayerBoard()
-                            .shoot(game.getEnemyPlayer(), Point(x, y))
-                    ) {
-                        this.classList.add("player-hit");
-                    } else {
-                        this.classList.add("player-missed");
-                    }
-                    this.innerText = "X";
-                }, {once: true});
-            } else {
-                const playerShipCoordinates = ships.reduce(
-                    (pointsArray, ship) => {
-                        return [...pointsArray, ...ship.coordinates];
+                newPoint.addEventListener(
+                    "click",
+                    function () {
+                        if (
+                            game
+                                .getPlayerBoard()
+                                .shoot(game.getEnemyPlayer(), Point(x, y))
+                        ) {
+                            this.classList.add("player-hit");
+                        } else {
+                            this.classList.add("player-missed");
+                        }
+                        this.innerText = "X";
                     },
-                    []
+                    { once: true }
                 );
-
-                if (playerShipCoordinates.length > 0) {
-                    if (
-                        playerShipCoordinates.find(
-                            (e) => e.getX() === x && e.getY() === y
-                        )
-                    ) {
-                        newPoint.classList.add("player-ship");
-                    }
+            } else {
+                newPoint.addEventListener("click", function () {
+                    game.addShip(Point(x, y));
+                });
+                if (
+                    game
+                        .getPlayer()
+                        .getOccupied()
+                        .find((e) => e.getX() === x && e.getY() === y)
+                ) {
+                    newPoint.classList.add("player-ship");
                 }
             }
             board.appendChild(newPoint);
