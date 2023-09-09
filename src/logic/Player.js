@@ -15,13 +15,21 @@ export default function (name) {
     let _occupiedPoints = {
         _data: [],
         add: function (pointsArray) {
+            if(pointsArray.length > 0 && this.isOccupied(pointsArray)){
+                throw RangeError('Some of the ships points are already occupied')
+            }
             this._data = [...this._data, ...pointsArray];
         },
         get: function () {
             return this._data;
         },
-        isOccupied: function (point) {
-            this._data.some((p) => p.json() === point.json()) ? true : false;
+        isOccupied: function (pointsArray) {
+            console.log(pointsArray)
+            for(let point of pointsArray){
+                console.log(point)
+                const a = this._data.some((p) => (p.json() === point.json()));
+                if(a) throw RangeError('Trying to add a ship on an occupied index')
+            }
         },
     };
 
@@ -65,29 +73,25 @@ export default function (name) {
                 case "up":
                     for (let i = 0; i < size; i++) {
                         const point = Point(start.getX(), start.getY() + i);
-                        if (!_occupiedPoints.isOccupied(point))
-                            currentShipPoints.push(point);
+                        currentShipPoints.push(point);
                     }
                     break;
                 case "down":
                     for (let i = 0; i < size; i++) {
                         const point = Point(start.getX(), start.getY() - i);
-                        if (!_occupiedPoints.isOccupied(point))
-                            currentShipPoints.push(point);
+                        currentShipPoints.push(point);
                     }
                     break;
                 case "right":
                     for (let i = 0; i < size; i++) {
                         const point = Point(start.getX() + i, start.getY());
-                        if (!_occupiedPoints.isOccupied(point))
-                            currentShipPoints.push(point);
+                        currentShipPoints.push(point);
                     }
                     break;
                 case "left":
                     for (let i = 0; i < size; i++) {
                         const point = Point(start.getX() - i, start.getY());
-                        if (!_occupiedPoints.isOccupied(point))
-                            currentShipPoints.push(point);
+                        currentShipPoints.push(point);
                     }
                     break;
                 default:
@@ -95,7 +99,6 @@ export default function (name) {
                         `Direction must be up, down, right or left. ${direction} passed`
                     );
             }
-
             _occupiedPoints.add(currentShipPoints);
             const newShip = Object.assign({}, Ship(size), {
                 coordinates: currentShipPoints,
