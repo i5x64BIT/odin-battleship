@@ -12,3 +12,6 @@ This project was provided by [Odin](https://theodinproject.com) to reinforce TDD
 4. Defining a function's/project's behavior before it's implementation.
     - The most helpful solution to me was to graphically visualize the relations between the different functions.
     - This way I can get a good grasp of how all the gears of a project move, before writing a singe line.
+5. Code regression if I forget to test before a push
+    - Add a github action that runs tests on each commit, work only on branches.
+    - Setup a git pre-commit hook that runs the test command before each commit.
