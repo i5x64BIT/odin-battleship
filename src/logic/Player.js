@@ -24,11 +24,9 @@ export default function (name) {
             return this._data;
         },
         isOccupied: function (pointsArray) {
-            console.log(pointsArray)
             for(let point of pointsArray){
-                console.log(point)
                 const a = this._data.some((p) => (p.json() === point.json()));
-                if(a) throw RangeError('Trying to add a ship on an occupied index')
+                if(a) return a;
             }
         },
     };
