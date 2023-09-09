@@ -13,9 +13,16 @@ export default (() => {
     };
 
     const unsubscribe = (event, token) => {
-        events[event] = events[event].filter((s) => !(s.token === token));
+        if(!event) throw TypeError('An event is expected')
+        if (!token) throw TypeError("A token is expected");
+        if(events[event]) throw TypeError('No matching event found');
+        
+        const newSubs = events[event].filter((s) => !(s.token === token));
+        if(newSubs.length === events[event].length) throw TypeError(`No token matching ${token} was found`)
+        events[event] = newSubs;
     };
     const publish = (event) => {
+        if(events[event] === undefined) throw TypeError(`"${event}" event has no subscribers yet.`)
         events[event].forEach((s) => s.func());
     };
 
