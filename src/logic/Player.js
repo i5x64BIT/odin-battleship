@@ -15,8 +15,10 @@ export default function (name) {
     let _occupiedPoints = {
         _data: [],
         add: function (pointsArray) {
-            if(pointsArray.length > 0 && this.isOccupied(pointsArray)){
-                throw RangeError('Some of the ships points are already occupied')
+            if (pointsArray.length > 0 && this.isOccupied(pointsArray)) {
+                throw RangeError(
+                    "Some of the ships points are already occupied"
+                );
             }
             this._data = [...this._data, ...pointsArray];
         },
@@ -24,9 +26,9 @@ export default function (name) {
             return this._data;
         },
         isOccupied: function (pointsArray) {
-            for(let point of pointsArray){
-                const a = this._data.some((p) => (p.json() === point.json()));
-                if(a) return a;
+            for (let point of pointsArray) {
+                const a = this._data.some((p) => p.json() === point.json());
+                if (a) return a;
             }
         },
     };
@@ -37,11 +39,63 @@ export default function (name) {
         getShipsLeft: () => _shipsLeft,
         getShipsOwned: () => _shipsOwned,
         getOccupied: () => _occupiedPoints.get(),
-        addShip: (size, start, direction) => {
+        getShip: (size, start, direction) => {
+            let isPlaceable;
+            let currentShipPoints = [];
             if (!size || typeof size !== "number" || isNaN(size))
                 throw new TypeError("A size of type number is expected");
             if (!start || start.getType() !== "Point")
                 throw new TypeError("A Point object is expected");
+
+            switch (direction) {
+                case "up":
+                    for (let i = 0; i < size; i++) {
+                        if (start.getY() + i > 9) break;
+                        const point = Point(start.getX(), start.getY() + i);
+                        currentShipPoints.push(point);
+                    }
+                    break;
+                case "down":
+                    for (let i = 0; i < size; i++) {
+                        if (start.getY() - i < 0 ) break;
+                        const point = Point(start.getX(), start.getY() - i);
+                        currentShipPoints.push(point);
+                    }
+                    break;
+                case "right":
+                    for (let i = 0; i < size; i++) {
+                        if (start.getX() + i > 9 ) break;
+                        const point = Point(start.getX() + i, start.getY());
+                        currentShipPoints.push(point);
+                    }
+                    break;
+                case "left":
+                    for (let i = 0; i < size; i++) {
+                        if (start.getX() - i < 0 ) break;
+                        const point = Point(start.getX() - i, start.getY());
+                        currentShipPoints.push(point);
+                    }
+                    break;
+                default:
+                    throw TypeError(
+                        `Direction must be up, down, right or left. ${direction} passed`
+                    );
+            }
+            isPlaceable =
+                !_occupiedPoints.isOccupied(currentShipPoints) &&
+                currentShipPoints.length === size;
+            const newShip = Object.assign({}, Ship(size), {
+                coordinates: currentShipPoints,
+                isPlaceable,
+            });
+            return newShip;
+        },
+        addShip: function (size, start, direction) {
+            const newShip = this.getShip(size, start, direction);
+            if(!newShip.isPlaceable){
+                throw new RangeError("Ship is exceeding the board or colliding with another ship, please start, direction and size")
+            }
+            if (!newShip.isPlaceable) return;
             let type;
             switch (size) {
                 case 2:
@@ -66,41 +120,7 @@ export default function (name) {
                     `Trying to create many ships of type ${type}.`
                 );
 
-            let currentShipPoints = [];
-            switch (direction) {
-                case "up":
-                    for (let i = 0; i < size; i++) {
-                        const point = Point(start.getX(), start.getY() + i);
-                        currentShipPoints.push(point);
-                    }
-                    break;
-                case "down":
-                    for (let i = 0; i < size; i++) {
-                        const point = Point(start.getX(), start.getY() - i);
-                        currentShipPoints.push(point);
-                    }
-                    break;
-                case "right":
-                    for (let i = 0; i < size; i++) {
-                        const point = Point(start.getX() + i, start.getY());
-                        currentShipPoints.push(point);
-                    }
-                    break;
-                case "left":
-                    for (let i = 0; i < size; i++) {
-                        const point = Point(start.getX() - i, start.getY());
-                        currentShipPoints.push(point);
-                    }
-                    break;
-                default:
-                    throw TypeError(
-                        `Direction must be up, down, right or left. ${direction} passed`
-                    );
-            }
-            _occupiedPoints.add(currentShipPoints);
-            const newShip = Object.assign({}, Ship(size), {
-                coordinates: currentShipPoints,
-            });
+            _occupiedPoints.add(newShip.coordinates);
             _shipsLeft[type]--;
             _shipsOwned.push(newShip);
         },

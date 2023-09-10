@@ -32,7 +32,7 @@ button {
     min-height: 100svh;
 }
 .game-section {
-    width:65%;
+    width: 65%;
     max-width: 400px;
     margin: auto;
 }
@@ -66,10 +66,16 @@ button {
 }
 .board-item:hover {
     background-color: bisque;
-    opacity: 0.5;
 }
 .player-ship {
     background-color: lightblue;
+}
+.player-occupied {
+    background-color: red;
+    cursor: not-allowed;
+}
+.player-placeable {
+    background-color: bisque;
 }
 .player-hit {
     background-color: red;
