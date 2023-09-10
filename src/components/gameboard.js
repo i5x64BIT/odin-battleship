@@ -51,26 +51,11 @@ export default (game, title, ships) => {
                             `[x="${point.getX()}"][y="${point.getY()}"]`
                         );
                         if (tmpShip.isPlaceable) {
-<<<<<<< HEAD
-<<<<<<< HEAD
                             classToAdd = "player-placeable";
-                            boardItem.classList.add(classToAdd);
                         } else {
                             classToAdd = "player-occupied";
-=======
-                            classToAdd = "player-occupied";
-                            boardItem.classList.add(classToAdd);
-                        } else {
-                            classToAdd = "player-placeable";
->>>>>>> 348699c (Add board hover)
-=======
-                            classToAdd = "player-placeable";
-                            boardItem.classList.add(classToAdd);
-                        } else {
-                            classToAdd = "player-occupied";
->>>>>>> 0905635 (Fix hover)
-                            boardItem.classList.add(classToAdd);
-                        }
+                        } 
+                        boardItem.classList.add(classToAdd);
                     }
                 });
                 newPoint.addEventListener("mouseout", () => {
