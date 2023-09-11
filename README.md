@@ -15,3 +15,6 @@ This project was provided by [Odin](https://theodinproject.com) to reinforce TDD
 5. Code regression if I forget to test before a push
     - Add a github action that runs tests on each commit, work only on branches.
     - Setup a git pre-commit hook that runs the test command before each commit.
+6. Code becomes a mess when one part of the app wants to be up to date about another
+    - In our decoupled approach, it is hard to have a clean and pure ui or Game.js.
+    - The solution I found to this issue is implementing the Pub/Sub Pattern
