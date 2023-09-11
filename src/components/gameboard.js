@@ -39,7 +39,6 @@ export default (game, title, ships) => {
                 newPoint.addEventListener(
                     "click",
                     function () {
-                        PubSub.publish("userShot");
                         if (
                             game
                                 .getPlayerBoard()
@@ -50,6 +49,7 @@ export default (game, title, ships) => {
                             this.classList.add("player-missed");
                         }
                         this.innerText = "X";
+                        PubSub.publish("userShot");
                     },
                     { once: true }
                 );

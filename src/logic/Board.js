@@ -1,7 +1,7 @@
 export default function () {
     const _type = "Board";
     let _shots = [];
-
+    let _hits = 0;
     return {
         getType: () => _type,
         getShots: () => _shots,
@@ -21,11 +21,13 @@ export default function () {
                         point.json()
                     ) {
                         enemyShip.hit();
+                        _hits++;
                         return true;
                     }
                 }
             }
             return false;
         },
+        getHits: () => _hits,
     };
 }

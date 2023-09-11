@@ -25,12 +25,18 @@ export default () => {
             const callback = function () {
                 if (_player.getShipsOwned().length === totalShips) {
                     PubSub.publish("gameStarted");
+                    
+                    const playerHP = _player.getOccupied().length;
 
                     PubSub.subscribe("userShot", () => {
+                        if(_playerBoard.getHits() === playerHP){
+                            alert('You won!!');
+                            PubSub.publish("gameOver");
+                        }
                         let point;
                         do {
-                            const x = Math.floor(Math.random() * 9 + 1);
-                            const y = Math.floor(Math.random() * 9 + 1);
+                            const x = Math.floor(Math.random() * 10);
+                            const y = Math.floor(Math.random() * 10);
                             point = Point(x, y);
                             console.log(console.log(point.json()));
                         } while (
@@ -41,6 +47,10 @@ export default () => {
 
                         _enemyBoard.shoot(_player, point);
                         PubSub.publish('enemyShot');
+                        if(_enemyBoard.getHits() === playerHP){
+                            alert("The enemy won :(");
+                            PubSub.publish("gameOver");
+                        }
                     });
                 } else {
                     continueTimeout = setTimeout(callback, 500);
