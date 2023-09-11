@@ -1,11 +1,12 @@
 import Game from "../../src/logic/Game";
 import Player from "../../src/logic/Player";
+import PlayerBot from "../../src/logic/PlayerBot";
 
 let game;
 describe("Getters", () => {
     beforeAll(() => {
         game = Game();
-        game.init(Player("Player"), Player("Enemy"));
+        game.init(Player("Player"), PlayerBot("Enemy"));
     });
     test("call getPlayerBoard", () =>
         expect(game.getPlayerBoard().getType()).toBe("Board"));

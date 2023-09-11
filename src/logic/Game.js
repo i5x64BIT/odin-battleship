@@ -13,11 +13,7 @@ export default () => {
             _player = player;
             _enemyPlayer = enemyPlayer;
 
-            // Listen for enemy input
-            enemyPlayer.addShip(3, Point(1, 1), "up");
-            enemyPlayer.addShip(3, Point(5, 5), "right");
-            enemyPlayer.addShip(4, Point(0, 9), "down");
-            enemyPlayer.addShip(2, Point(5, 8), "down");
+            _enemyPlayer.populate();
         },
         getPlayerBoard: () => _playerBoard,
         getPlayer: () => _player,
