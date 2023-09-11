@@ -1,4 +1,5 @@
 import Point from "../logic/Point";
+import PubSub from "../logic/PubSub";
 
 export default (game, title, ships) => {
     const page = document.querySelector(".page-container");
@@ -12,6 +13,17 @@ export default (game, title, ships) => {
     const board = document.createElement("div");
     board.classList = "board";
 
+    if(!ships){
+
+    } else{
+        PubSub.subscribe("enemyShot", () => {
+            const enemyShots = game.getEnemyBoard().getShots();
+            const latestShot = enemyShots[enemyShots.length - 1];
+
+            board.querySelector(`[x="${latestShot.getX()}"][y="${latestShot.getY()}"]`)
+                .classList.add('enemy-shot')
+        });
+    }
     for (let y = 9; y >= 0; y--) {
         for (let x = 0; x < 10; x++) {
             const newPoint = document.createElement("div");
@@ -20,9 +32,14 @@ export default (game, title, ships) => {
             newPoint.classList = "board-item";
 
             if (!ships) {
+                container.style.visibility = "hidden";
+                PubSub.subscribe("gameStarted", () => {
+                    container.style.visibility = "visible";
+                });
                 newPoint.addEventListener(
                     "click",
                     function () {
+                        PubSub.publish("userShot");
                         if (
                             game
                                 .getPlayerBoard()
@@ -54,7 +71,7 @@ export default (game, title, ships) => {
                             classToAdd = "player-placeable";
                         } else {
                             classToAdd = "player-occupied";
-                        } 
+                        }
                         boardItem.classList.add(classToAdd);
                     }
                 });

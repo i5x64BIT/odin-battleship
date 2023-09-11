@@ -88,3 +88,9 @@ button {
     grid-auto-flow: column;
     grid-auto-columns: 1fr;
 }
+.enemy-shot {
+    background-color: lightgrey;
+}
+.enemy-shot::before {
+    content: "X";
+}
