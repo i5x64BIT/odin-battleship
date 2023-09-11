@@ -9,5 +9,6 @@ const player = Player("Joe");
 const enemy = PlayerBot("AI");
 
 game.init(player, enemy);
+game.start();
 
 main(game);
